@@ -1,0 +1,7 @@
+name: Murder
+version: ${project.version}
+main: net.phoenix1355.murder.Murder
+api-version: 1.13
+authors: [Phoenix1355]
+description: A gamemode for Minecraft Spigot Servers inspired by Murder from Garrys Mod
+website: https://bohlbro.dk/mc-murder
