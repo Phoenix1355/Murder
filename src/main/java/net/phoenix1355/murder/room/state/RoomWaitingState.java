@@ -1,14 +1,31 @@
 package net.phoenix1355.murder.room.state;
 
 import net.phoenix1355.murder.room.RoomStateManager;
-import org.bukkit.entity.Player;
+import net.phoenix1355.murder.user.User;
+import net.phoenix1355.murder.utils.ChatFormatter;
 
 public class RoomWaitingState extends BaseRoomState {
     private static final int MIN_PLAYERS = 2;
+    private boolean _ready = false;
 
     @Override
     public void onStart() {
+        checkPlayerCount();
+    }
 
+    @Override
+    public void onUpdate() {
+        if (_ready) {
+            if (getTimer() == 0) {
+                getStateManager().setState(RoomStateManager.RoomState.STARTING);
+            }
+
+            if (getTimer() > 0 && getTimer() % 5 == 0) {
+                getRoom().broadcast(ChatFormatter.format("Game starting in &b%s second%s", getTimer(), getTimer() != 1 ? "s" : ""));
+            }
+
+            setTimer(getTimer() - 1);
+        }
     }
 
     @Override
@@ -17,30 +34,36 @@ public class RoomWaitingState extends BaseRoomState {
     }
 
     @Override
-    public void onPlayerJoin(Player player) {
+    public void onUserJoin(User user) {
         getRoom().broadcast(
                 String.format(
                         "%s has joined the room (%d/%d)",
-                        player.getName(),
-                        getStateManager().getRoom().getPlayers().size(),
+                        user.getPlayer().getName(),
+                        getStateManager().getRoom().getUsers().size(),
                         MIN_PLAYERS
                 )
         );
 
         // Teleport player to lobby spawn
-        player.teleport(getRoom().getSettings().getLobbySpawnLocation());
+        user.getPlayer().teleport(getRoom().getSettings().getLobbySpawnLocation());
 
-        if (getRoom().getPlayers().size() >= MIN_PLAYERS) {
-            getRoom().broadcast("Game is starting in 15 seconds");
-            getStateManager().setState(RoomStateManager.RoomState.RUNNING);
-        }
+        checkPlayerCount();
     }
 
     @Override
-    public void onPlayerLeave(Player player) {
-        getRoom().broadcast(String.format("%s has left the room", player.getName()));
+    public void onUserLeave(User user) {
+        getRoom().broadcast(String.format("%s has left the room", user.getPlayer().getName()));
 
-        if (player.getBedSpawnLocation() != null)
-            player.teleport(player.getBedSpawnLocation());
+        if (user.getPlayer().getBedSpawnLocation() != null)
+            user.getPlayer().teleport(user.getPlayer().getBedSpawnLocation());
+    }
+
+    private void checkPlayerCount() {
+        if (getRoom().getUsers().size() >= MIN_PLAYERS) {
+            setTimer(20);
+            _ready = true;
+        } else {
+            _ready = false;
+        }
     }
 }

@@ -6,6 +6,7 @@ import net.phoenix1355.murder.room.RoomManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ListArgument extends BaseArgument {

@@ -23,8 +23,7 @@ public class RoomCreateArgument extends BaseArgument {
             rm.createRoom(args[2].toLowerCase());
             sender.sendMessage(ChatFormatter.format("Room &b%s&e has been created", args[2]));
         } catch (RoomException e) {
-            sender.sendMessage(e.getMessage());
-            return false;
+            sender.sendMessage(ChatFormatter.format(e.getMessage()));
         }
 
         return true;

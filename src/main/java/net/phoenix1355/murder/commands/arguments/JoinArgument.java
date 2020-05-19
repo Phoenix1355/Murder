@@ -3,6 +3,7 @@ package net.phoenix1355.murder.commands.arguments;
 import net.phoenix1355.murder.commands.CommandUsage;
 import net.phoenix1355.murder.commands.arguments.BaseArgument;
 import net.phoenix1355.murder.room.Room;
+import net.phoenix1355.murder.room.RoomException;
 import net.phoenix1355.murder.room.RoomManager;
 import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.command.Command;
@@ -22,10 +23,20 @@ public class JoinArgument extends BaseArgument {
 
         if (room == null) {
             sender.sendMessage(ChatFormatter.format("The room %s doesn't exist", args[1]));
-            return false;
+            return true;
         }
 
-        room.join((Player) sender);
+        if (rm.getRoomFromPlayer((Player) sender) != null) {
+            sender.sendMessage(ChatFormatter.format("You are already in a room. Use &b/mm leave&e to leave, before joining another room"));
+            return true;
+        }
+
+        try {
+            room.join((Player) sender);
+        } catch (RoomException e) {
+            sender.sendMessage(ChatFormatter.format("Unexpected error: &c%s", e.getMessage()));
+            return true;
+        }
 
         return true;
     }

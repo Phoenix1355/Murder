@@ -1,14 +1,14 @@
 package net.phoenix1355.murder.room;
 
-import net.phoenix1355.murder.room.state.BaseRoomState;
-import net.phoenix1355.murder.room.state.RoomEndingState;
-import net.phoenix1355.murder.room.state.RoomRunningState;
-import net.phoenix1355.murder.room.state.RoomWaitingState;
+import net.phoenix1355.murder.Murder;
+import net.phoenix1355.murder.room.state.*;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 
 public class RoomStateManager {
     private final Room _room;
+
     private BaseRoomState _roomState;
 
     public RoomStateManager(Room room) {
@@ -21,11 +21,14 @@ public class RoomStateManager {
 
     public void setState(RoomState state) {
         try {
-            if (_roomState != null)
+            if (_roomState != null) {
+                _roomState.cancel();
                 _roomState.onStop();
+            }
 
             _roomState = state.getInstance();
             _roomState.attachStateManager(this);
+            _roomState.start();
 
             if (_roomState == null) {
                 System.out.println("Unexpected null on setting state");
@@ -43,6 +46,7 @@ public class RoomStateManager {
 
     public enum RoomState {
         WAITING(RoomWaitingState.class),
+        STARTING(RoomStartingState.class),
         RUNNING(RoomRunningState.class),
         ENDING(RoomEndingState.class);
 

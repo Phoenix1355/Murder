@@ -1,6 +1,7 @@
 package net.phoenix1355.murder.room;
 
 import net.phoenix1355.murder.config.RoomConfigHandler;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class RoomManager {
         Room room = new Room(roomId);
 
         if (_rooms.get(roomId) != null) {
-            throw new RoomException(String.format("Room with id '%s' already exists", roomId));
+            throw new RoomException(String.format("Room with id &b%s&e already exists", roomId));
         }
 
         _rooms.put(roomId, room);
@@ -32,6 +33,16 @@ public class RoomManager {
 
     public Room getRoom(String roomId) {
         return _rooms.get(roomId);
+    }
+
+    public Room getRoomFromPlayer(Player player) {
+        for (Map.Entry<String, Room> room : _rooms.entrySet()) {
+            if (room.getValue().getUser(player) != null) {
+                return room.getValue();
+            }
+        }
+
+        return null;
     }
 
     public Map<String, Room> getAllRooms() {

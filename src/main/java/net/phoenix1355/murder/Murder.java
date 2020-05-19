@@ -10,7 +10,6 @@ public final class Murder extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-
         saveDefaultConfig();
         RoomConfigHandler.init(this);
 
