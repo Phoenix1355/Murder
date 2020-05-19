@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Murder:jar">
+    <output-path>$USER_HOME$/OneDrive/Desktop/Minecraft Paper Server/plugins</output-path>
+    <root id="archive" name="Murder.jar">
+      <element id="module-output" name="Murder" />
+    </root>
+  </artifact>
+</component>
