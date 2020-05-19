@@ -1,5 +1,6 @@
 package net.phoenix1355.murder.room.state;
 
+import net.phoenix1355.murder.room.Room;
 import net.phoenix1355.murder.room.RoomStateManager;
 import org.bukkit.entity.Player;
 
@@ -12,6 +13,10 @@ public abstract class BaseRoomState {
 
     protected RoomStateManager getStateManager() {
         return _roomStateManager;
+    }
+
+    protected Room getRoom() {
+        return _roomStateManager.getRoom();
     }
 
     public abstract void onStart();

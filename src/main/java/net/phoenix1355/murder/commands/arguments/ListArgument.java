@@ -1,5 +1,6 @@
 package net.phoenix1355.murder.commands.arguments;
 
+import net.phoenix1355.murder.commands.CommandUsage;
 import net.phoenix1355.murder.room.Room;
 import net.phoenix1355.murder.room.RoomManager;
 import org.bukkit.command.Command;
@@ -36,7 +37,7 @@ public class ListArgument extends BaseArgument {
     }
 
     @Override
-    public String getUsage() {
-        return "/mm list - List all rooms";
+    public CommandUsage getUsage() {
+        return new CommandUsage("/mm list", "List all rooms");
     }
 }

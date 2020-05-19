@@ -1,5 +1,6 @@
 package net.phoenix1355.murder.commands.arguments;
 
+import net.phoenix1355.murder.commands.CommandUsage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,8 +38,8 @@ public abstract class BaseArgumentGroup extends BaseArgument {
      * Gathers a list of all the command arguments and their nested arguments along with the usage of each argument
      * @return List of command arguments usage
      */
-    public List<String> getUsages() {
-        List<String> usages = new ArrayList<>();
+    public List<CommandUsage> getUsages() {
+        List<CommandUsage> usages = new ArrayList<>();
 
         for (Map.Entry<String, BaseArgument> arg : _argumentMap.entrySet()) {
             BaseArgument argument = arg.getValue();
@@ -48,7 +49,7 @@ public abstract class BaseArgumentGroup extends BaseArgument {
                         ((BaseArgumentGroup) argument).getUsages()
                 );
             } else {
-                String usage = argument .getUsage();
+                CommandUsage usage = argument.getUsage();
                 if (usage != null)
                     usages.add(usage);
             }
@@ -64,6 +65,10 @@ public abstract class BaseArgumentGroup extends BaseArgument {
      * @param argument The command argument to register
      */
     protected void registerArgument(BaseArgument argument) {
+        if (argument == this) {
+            throw new RuntimeException("Can't register instance of self. Will cause stack overflow...");
+        }
+
         _argumentMap.put(argument.getArgumentString(), argument);
     }
 }

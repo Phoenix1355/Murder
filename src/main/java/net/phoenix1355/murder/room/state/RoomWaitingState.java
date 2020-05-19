@@ -18,7 +18,7 @@ public class RoomWaitingState extends BaseRoomState {
 
     @Override
     public void onPlayerJoin(Player player) {
-        getStateManager().getRoom().broadcast(
+        getRoom().broadcast(
                 String.format(
                         "%s has joined the room (%d/%d)",
                         player.getName(),
@@ -27,14 +27,20 @@ public class RoomWaitingState extends BaseRoomState {
                 )
         );
 
-        if (getStateManager().getRoom().getPlayers().size() >= MIN_PLAYERS) {
-            getStateManager().getRoom().broadcast("Game is starting in 15 seconds");
+        // Teleport player to lobby spawn
+        player.teleport(getRoom().getSettings().getLobbySpawnLocation());
+
+        if (getRoom().getPlayers().size() >= MIN_PLAYERS) {
+            getRoom().broadcast("Game is starting in 15 seconds");
             getStateManager().setState(RoomStateManager.RoomState.RUNNING);
         }
     }
 
     @Override
     public void onPlayerLeave(Player player) {
-        getStateManager().getRoom().broadcast(String.format("%s has left the room", player.getName()));
+        getRoom().broadcast(String.format("%s has left the room", player.getName()));
+
+        if (player.getBedSpawnLocation() != null)
+            player.teleport(player.getBedSpawnLocation());
     }
 }

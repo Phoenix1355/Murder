@@ -1,21 +1,18 @@
-package net.phoenix1355.murder.commands.arguments;
+package net.phoenix1355.murder.commands;
 
+import net.phoenix1355.murder.commands.arguments.BaseArgumentGroup;
+import net.phoenix1355.murder.commands.arguments.JoinArgument;
+import net.phoenix1355.murder.commands.arguments.LeaveArgument;
+import net.phoenix1355.murder.commands.arguments.ListArgument;
 import net.phoenix1355.murder.commands.arguments.arena.ArenaArgumentGroup;
 import net.phoenix1355.murder.commands.arguments.room.RoomArgumentGroup;
+import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class CommandRegistry implements CommandExecutor {
     private final MainArgumentGroup _main = new MainArgumentGroup();
-
-    public CommandRegistry() {
-        _main.registerArgument(new JoinArgument());
-        _main.registerArgument(new LeaveArgument());
-        _main.registerArgument(new ListArgument());
-        _main.registerArgument(new RoomArgumentGroup());
-        _main.registerArgument(new ArenaArgumentGroup());
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -34,6 +31,14 @@ public class CommandRegistry implements CommandExecutor {
 
     private static class MainArgumentGroup extends BaseArgumentGroup {
 
+        public MainArgumentGroup() {
+            registerArgument(new JoinArgument());
+            registerArgument(new LeaveArgument());
+            registerArgument(new ListArgument());
+            registerArgument(new RoomArgumentGroup());
+            registerArgument(new ArenaArgumentGroup());
+        }
+
         @Override
         public String getArgumentString() {
             return "mm"; // Not used
@@ -43,8 +48,8 @@ public class CommandRegistry implements CommandExecutor {
     private void sendHelp(CommandSender sender) {
         sender.sendMessage("Murder commands:");
 
-        for (String usage : _main.getUsages()) {
-            sender.sendMessage(String.format("  %s", usage));
+        for (CommandUsage usage : _main.getUsages()) {
+            sender.sendMessage(ChatFormatter.format("  &b%s&7 - %s", usage.getSignature(), usage.getDescription()));
         }
     }
 }

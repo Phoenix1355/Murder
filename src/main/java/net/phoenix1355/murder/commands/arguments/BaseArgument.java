@@ -1,5 +1,6 @@
 package net.phoenix1355.murder.commands.arguments;
 
+import net.phoenix1355.murder.commands.CommandUsage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -19,7 +20,7 @@ public abstract class BaseArgument {
         sender.sendMessage("Correct usage: " + getUsage());
     }
 
-    public String getUsage() {
+    public CommandUsage getUsage() {
         return null;
     }
 }

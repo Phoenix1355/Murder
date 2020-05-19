@@ -1,8 +1,10 @@
 package net.phoenix1355.murder.commands.arguments;
 
+import net.phoenix1355.murder.commands.CommandUsage;
 import net.phoenix1355.murder.commands.arguments.BaseArgument;
 import net.phoenix1355.murder.room.Room;
 import net.phoenix1355.murder.room.RoomManager;
+import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,7 +21,7 @@ public class JoinArgument extends BaseArgument {
         Room room = rm.getRoom(args[1]);
 
         if (room == null) {
-            sender.sendMessage(String.format("The room '%s' doesn't exist", args[1]));
+            sender.sendMessage(ChatFormatter.format("The room %s doesn't exist", args[1]));
             return false;
         }
 
@@ -34,9 +36,11 @@ public class JoinArgument extends BaseArgument {
     }
 
     @Override
-    public String getUsage() {
-        return "/mm join <room> - Join a game room";
+    public CommandUsage getUsage() {
+        return new CommandUsage("/mm join <room>", "Join a game room");
     }
+
+
 
     @Override
     public boolean requirePlayer() {

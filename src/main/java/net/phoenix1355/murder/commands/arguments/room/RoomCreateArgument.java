@@ -1,8 +1,10 @@
 package net.phoenix1355.murder.commands.arguments.room;
 
+import net.phoenix1355.murder.commands.CommandUsage;
 import net.phoenix1355.murder.commands.arguments.BaseArgument;
 import net.phoenix1355.murder.room.RoomException;
 import net.phoenix1355.murder.room.RoomManager;
+import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -19,7 +21,7 @@ public class RoomCreateArgument extends BaseArgument {
 
         try {
             rm.createRoom(args[2].toLowerCase());
-            sender.sendMessage(String.format("Room '%s' has been created", args[2]));
+            sender.sendMessage(ChatFormatter.format("Room &b%s&e has been created", args[2]));
         } catch (RoomException e) {
             sender.sendMessage(e.getMessage());
             return false;
@@ -34,7 +36,8 @@ public class RoomCreateArgument extends BaseArgument {
     }
 
     @Override
-    public String getUsage() {
-        return "/mm room create <id> - Creates a new room";
+    public CommandUsage getUsage() {
+        return new CommandUsage("/mm room create <name>", "Creates a new room");
     }
+
 }

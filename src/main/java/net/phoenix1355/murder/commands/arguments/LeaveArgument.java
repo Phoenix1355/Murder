@@ -1,6 +1,8 @@
 package net.phoenix1355.murder.commands.arguments;
 
+import net.phoenix1355.murder.commands.CommandUsage;
 import net.phoenix1355.murder.commands.arguments.BaseArgument;
+import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -18,8 +20,8 @@ public class LeaveArgument extends BaseArgument {
     }
 
     @Override
-    public String getUsage() {
-        return "/mm leave - Leave current game";
+    public CommandUsage getUsage() {
+        return new CommandUsage("/mm leave", "Leave current game");
     }
 
     @Override
