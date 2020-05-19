@@ -3,6 +3,7 @@ package net.phoenix1355.murder.room.state;
 import net.phoenix1355.murder.room.RoomStateManager;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
+import org.bukkit.GameMode;
 
 public class RoomWaitingState extends BaseRoomState {
     private static final int MIN_PLAYERS = 2;
@@ -10,6 +11,13 @@ public class RoomWaitingState extends BaseRoomState {
 
     @Override
     public void onStart() {
+        for (User user : getRoom().getUsers()) {
+            user.setRole(User.Role.SPECTATOR);
+            user.getPlayer().getInventory().clear();
+            user.getPlayer().teleport(getRoom().getSettings().getLobbySpawnLocation());
+            user.getPlayer().setGameMode(GameMode.ADVENTURE);
+        }
+
         checkPlayerCount();
     }
 
@@ -18,9 +26,10 @@ public class RoomWaitingState extends BaseRoomState {
         if (_ready) {
             if (getTimer() == 0) {
                 getStateManager().setState(RoomStateManager.RoomState.STARTING);
+                return;
             }
 
-            if (getTimer() > 0 && getTimer() % 5 == 0) {
+            if (getTimer() % 5 == 0) {
                 getRoom().broadcast(ChatFormatter.format("Game starting in &b%s second%s", getTimer(), getTimer() != 1 ? "s" : ""));
             }
 
@@ -35,6 +44,9 @@ public class RoomWaitingState extends BaseRoomState {
 
     @Override
     public void onUserJoin(User user) {
+        user.getPlayer().getInventory().clear();
+        user.getPlayer().setGameMode(GameMode.ADVENTURE);
+
         getRoom().broadcast(
                 String.format(
                         "%s has joined the room (%d/%d)",

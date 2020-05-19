@@ -2,6 +2,9 @@ package net.phoenix1355.murder.room;
 
 import net.phoenix1355.murder.Murder;
 import net.phoenix1355.murder.user.User;
+import net.phoenix1355.murder.utils.ChatFormatter;
+import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,6 +52,12 @@ public class Room {
         _roomStateManager.getState().onUserLeave(user);
     }
 
+    public void kill(Player player) {
+        User user = getUser(player);
+
+        _roomStateManager.getState().onUserDeath(user);
+    }
+
     public List<User> getUsers() {
         return _users;
     }
@@ -77,7 +86,8 @@ public class Room {
 
         for (User user : getUsers()) {
             for (User u : getUsers()) {
-                user.getPlayer().showPlayer(plugin, u.getPlayer());
+                if (user != u)
+                    user.getPlayer().showPlayer(plugin, u.getPlayer());
             }
         }
     }
@@ -87,7 +97,8 @@ public class Room {
 
         for (User user : getUsers()) {
             for (User u : getUsers()) {
-                user.getPlayer().hidePlayer(plugin, u.getPlayer());
+                if (user != u)
+                    user.getPlayer().hidePlayer(plugin, u.getPlayer());
             }
         }
     }

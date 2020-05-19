@@ -50,6 +50,14 @@ public abstract class BaseRoomState extends BukkitRunnable {
         // Empty implementation
     }
 
+    /**
+     * Lifecycle event for when a player is killed
+     * @param user The user who is killed
+     */
+    public void onUserDeath(User user) {
+
+    }
+
     protected RoomStateManager getStateManager() {
         return _roomStateManager;
     }
