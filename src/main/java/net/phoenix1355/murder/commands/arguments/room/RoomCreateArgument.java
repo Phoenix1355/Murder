@@ -35,6 +35,11 @@ public class RoomCreateArgument extends BaseArgument {
     }
 
     @Override
+    public String requirePermission() {
+        return "murder.admin.room.create";
+    }
+
+    @Override
     public CommandUsage getUsage() {
         return new CommandUsage("/mm room create <name>", "Creates a new room");
     }

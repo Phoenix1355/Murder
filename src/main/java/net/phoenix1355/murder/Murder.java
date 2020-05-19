@@ -1,6 +1,7 @@
 package net.phoenix1355.murder;
 
 import net.phoenix1355.murder.commands.CommandRegistry;
+import net.phoenix1355.murder.config.ArenaConfigHandler;
 import net.phoenix1355.murder.config.MainConfigHandler;
 import net.phoenix1355.murder.config.RoomConfigHandler;
 import net.phoenix1355.murder.room.RoomEvents;
@@ -15,6 +16,7 @@ public final class Murder extends JavaPlugin {
         saveDefaultConfig();
         MainConfigHandler.init(this);
         RoomConfigHandler.init(this);
+        ArenaConfigHandler.init(this);
 
         // Register event listeners
         new RoomEvents(this);

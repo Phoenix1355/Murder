@@ -1,5 +1,8 @@
 package net.phoenix1355.murder.commands;
 
+import net.phoenix1355.murder.utils.ChatFormatter;
+import org.bukkit.command.CommandSender;
+
 public class CommandUsage {
     private final String _signature;
     private final String _description;
@@ -9,11 +12,15 @@ public class CommandUsage {
         _description = description;
     }
 
-    public String getSignature() {
+    String getSignature() {
         return _signature;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return _description;
+    }
+
+    public void send(CommandSender sender) {
+        sender.sendMessage(ChatFormatter.format("  &b%s&7 - %s", getSignature(), getDescription()));
     }
 }

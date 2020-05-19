@@ -23,4 +23,9 @@ public class RoomEditArgumentGroup extends BaseArgumentGroup {
     public String getArgumentString() {
         return "edit";
     }
+
+    @Override
+    public String requirePermission() {
+        return "murder.admin.room.edit.*";
+    }
 }

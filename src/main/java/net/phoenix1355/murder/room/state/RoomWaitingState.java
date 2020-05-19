@@ -64,10 +64,12 @@ public class RoomWaitingState extends BaseRoomState {
 
     @Override
     public void onUserLeave(User user) {
-        getRoom().broadcast(String.format("%s has left the room", user.getPlayer().getName()));
+        getRoom().broadcast(ChatFormatter.format("&b%s&e has left the room", user.getPlayer().getName()));
 
         if (user.getPlayer().getBedSpawnLocation() != null)
             user.getPlayer().teleport(user.getPlayer().getBedSpawnLocation());
+        else
+            user.getPlayer().teleport(user.getPlayer().getWorld().getSpawnLocation());
     }
 
     private void checkPlayerCount() {

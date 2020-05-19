@@ -8,10 +8,12 @@ import java.util.Map;
 public class RoomManager {
     private static RoomManager _instance;
 
+    private final RoomConfigHandler _configHandler;
     private final Map<String, Room> _rooms;
 
     private RoomManager() {
-        _rooms = RoomConfigHandler.getInstance().loadRooms();
+        _configHandler = RoomConfigHandler.getInstance();
+        _rooms = _configHandler.loadRooms();
     }
 
     public static RoomManager getInstance() {
@@ -22,7 +24,10 @@ public class RoomManager {
     }
 
     public void createRoom(String roomId) throws RoomException {
+        _configHandler.createRoom(roomId);
+
         Room room = new Room(roomId);
+
 
         if (_rooms.get(roomId) != null) {
             throw new RoomException(String.format("Room with id &b%s&e already exists", roomId));

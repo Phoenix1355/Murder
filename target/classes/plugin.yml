@@ -17,4 +17,14 @@ permissions:
     default: op
     children:
       murder.admin: true
-      murder.admin.create: true
+      murder.admin.room.create: true
+      murder.admin.room.delete: true
+      murder.admin.room.edit: true
+      murder.admin.room.edit.setspawn: true
+      murder.admin.arena.create: true
+      murder.admin.arena.delete: true
+      murder.admin.arena.edit.clue.create: true
+      murder.admin.arena.edit.clue.delete: true
+      murder.admin.arena.edit.spawn.create: true
+      murder.admin.arena.edit.spawn.delete: true
+

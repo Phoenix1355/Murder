@@ -48,8 +48,8 @@ public class CommandRegistry implements CommandExecutor {
     private void sendHelp(CommandSender sender) {
         sender.sendMessage("Murder commands:");
 
-        for (CommandUsage usage : _main.getUsages()) {
-            sender.sendMessage(ChatFormatter.format("  &b%s&7 - %s", usage.getSignature(), usage.getDescription()));
+        for (CommandUsage usage : _main.getUsages(sender)) {
+            usage.send(sender);
         }
     }
 }

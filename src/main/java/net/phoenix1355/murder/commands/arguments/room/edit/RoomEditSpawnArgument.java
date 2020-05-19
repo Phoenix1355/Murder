@@ -1,5 +1,6 @@
 package net.phoenix1355.murder.commands.arguments.room.edit;
 
+import net.phoenix1355.murder.commands.CommandUsage;
 import net.phoenix1355.murder.commands.arguments.BaseArgument;
 import net.phoenix1355.murder.room.Room;
 import net.phoenix1355.murder.room.RoomManager;
@@ -13,10 +14,6 @@ import org.bukkit.entity.Player;
 public class RoomEditSpawnArgument extends BaseArgument {
     @Override
     public boolean handleCommand(CommandSender sender, Command command, String[] args, int argIndex) {
-        sender.sendMessage("Args:");
-        for (String s : args) {
-            sender.sendMessage("  " + s);
-        }
         RoomManager rm = RoomManager.getInstance();
         Room room = rm.getRoom(args[2]);
 
@@ -35,17 +32,26 @@ public class RoomEditSpawnArgument extends BaseArgument {
                         args[2], location.getBlockX(), location.getBlockY(), location.getBlockZ()
         ));
 
-
         return true;
     }
 
     @Override
     public String getArgumentString() {
-        return "spawn";
+        return "setspawn";
+    }
+
+    @Override
+    public String requirePermission() {
+        return "murder.admin.room.edit.setspawn";
     }
 
     @Override
     public boolean requirePlayer() {
         return true;
+    }
+
+    @Override
+    public CommandUsage getUsage() {
+        return new CommandUsage("/mm room edit <room> setspawn", "Sets the room lobby spawn");
     }
 }
