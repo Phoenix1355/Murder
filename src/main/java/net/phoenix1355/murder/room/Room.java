@@ -128,6 +128,7 @@ public class Room {
             RoomUtils.resetUser(user);
             user.getPlayer().teleport(getSettings().getLobbySpawnLocation());
             user.getPlayer().setGameMode(GameMode.ADVENTURE);
+            user.hideTrail();
         }
 
         for (Item item : _spawnedItems) {
