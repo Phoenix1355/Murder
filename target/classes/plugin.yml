@@ -1,5 +1,5 @@
 name: Murder
-version: ${project.version}
+version: 1.0-SNAPSHOT
 main: net.phoenix1355.murder.Murder
 api-version: 1.13
 authors: [Phoenix1355]

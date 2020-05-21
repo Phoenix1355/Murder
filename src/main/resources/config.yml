@@ -1,0 +1,21 @@
+#             Murder Configuration File
+#
+#         You can edit all the settings of the
+#       plugin here. Make sure to read everything
+#      before editing, so you don't break anything
+
+# Enable inventory manager
+invetory-manager: true
+
+# Which item should be the murder weapon?
+murder-weapon: IRON_SWORD
+
+# How many second before a detective can shoot again?
+# (Time before they are given another arrow)
+detective-bow-cooldown: 5
+
+# How many arrows should a detective have?
+detective-default-arrows: 1
+
+# How many clues should a player find before becoming detective?
+player-detective-clues: 5
