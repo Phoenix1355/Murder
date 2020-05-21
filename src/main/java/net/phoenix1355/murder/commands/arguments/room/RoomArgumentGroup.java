@@ -17,5 +17,8 @@ public class RoomArgumentGroup extends BaseArgumentGroup {
         return "room";
     }
 
-
+    @Override
+    public String requirePermission() {
+        return "murder.admin.room.*";
+    }
 }

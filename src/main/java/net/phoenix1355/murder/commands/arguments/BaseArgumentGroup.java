@@ -1,6 +1,7 @@
 package net.phoenix1355.murder.commands.arguments;
 
 import net.phoenix1355.murder.commands.CommandUsage;
+import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,13 +19,13 @@ public abstract class BaseArgumentGroup extends BaseArgument {
 
         if (argumentHandler != null) {
             if (argumentHandler.requirePermission() != null
-                    && sender.hasPermission(argumentHandler.requirePermission())) {
-                sender.sendMessage("You do not have permission to run this command");
+                    && !sender.hasPermission(argumentHandler.requirePermission())) {
+                sender.sendMessage(ChatFormatter.format("&cYou do not have permission to run this command"));
                 return false;
             }
 
             if (argumentHandler.requirePlayer() && !(sender instanceof Player)) {
-                sender.sendMessage("This command can only be run by players");
+                sender.sendMessage(ChatFormatter.format("This command can only be run by players"));
                 return false;
             }
 
@@ -38,15 +39,18 @@ public abstract class BaseArgumentGroup extends BaseArgument {
      * Gathers a list of all the command arguments and their nested arguments along with the usage of each argument
      * @return List of command arguments usage
      */
-    public List<CommandUsage> getUsages() {
+    public List<CommandUsage> getUsages(CommandSender sender) {
         List<CommandUsage> usages = new ArrayList<>();
 
         for (Map.Entry<String, BaseArgument> arg : _argumentMap.entrySet()) {
             BaseArgument argument = arg.getValue();
 
+            if (argument.requirePermission() != null && !sender.hasPermission(argument.requirePermission()))
+                continue;
+
             if (argument instanceof BaseArgumentGroup) {
                 usages.addAll(
-                        ((BaseArgumentGroup) argument).getUsages()
+                        ((BaseArgumentGroup) argument).getUsages(sender)
                 );
             } else {
                 CommandUsage usage = argument.getUsage();

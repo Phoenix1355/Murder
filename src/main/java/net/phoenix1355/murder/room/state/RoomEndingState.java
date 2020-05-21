@@ -30,6 +30,6 @@ public class RoomEndingState extends BaseRoomState {
 
     @Override
     public void onStop() {
-
+        getRoom().getArenaHandler().reset();
     }
 }

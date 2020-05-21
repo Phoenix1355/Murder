@@ -1,9 +1,6 @@
 package net.phoenix1355.murder.commands;
 
-import net.phoenix1355.murder.commands.arguments.BaseArgumentGroup;
-import net.phoenix1355.murder.commands.arguments.JoinArgument;
-import net.phoenix1355.murder.commands.arguments.LeaveArgument;
-import net.phoenix1355.murder.commands.arguments.ListArgument;
+import net.phoenix1355.murder.commands.arguments.*;
 import net.phoenix1355.murder.commands.arguments.arena.ArenaArgumentGroup;
 import net.phoenix1355.murder.commands.arguments.room.RoomArgumentGroup;
 import net.phoenix1355.murder.utils.ChatFormatter;
@@ -35,6 +32,7 @@ public class CommandRegistry implements CommandExecutor {
             registerArgument(new JoinArgument());
             registerArgument(new LeaveArgument());
             registerArgument(new ListArgument());
+            registerArgument(new TestArgument());
             registerArgument(new RoomArgumentGroup());
             registerArgument(new ArenaArgumentGroup());
         }
@@ -48,8 +46,8 @@ public class CommandRegistry implements CommandExecutor {
     private void sendHelp(CommandSender sender) {
         sender.sendMessage("Murder commands:");
 
-        for (CommandUsage usage : _main.getUsages()) {
-            sender.sendMessage(ChatFormatter.format("  &b%s&7 - %s", usage.getSignature(), usage.getDescription()));
+        for (CommandUsage usage : _main.getUsages(sender)) {
+            usage.send(sender);
         }
     }
 }

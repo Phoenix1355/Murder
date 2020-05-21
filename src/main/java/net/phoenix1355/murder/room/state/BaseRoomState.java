@@ -1,9 +1,11 @@
 package net.phoenix1355.murder.room.state;
 
 import net.phoenix1355.murder.Murder;
+import net.phoenix1355.murder.arena.ArenaClueLocation;
 import net.phoenix1355.murder.room.Room;
 import net.phoenix1355.murder.room.RoomStateManager;
 import net.phoenix1355.murder.user.User;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -55,7 +57,16 @@ public abstract class BaseRoomState extends BukkitRunnable {
      * @param user The user who is killed
      */
     public void onUserDeath(User user) {
+        // Empty implementation
+    }
 
+    /**
+     * Room event for when player interacts with a clue (clicks it)
+     * @param player The player
+     * @param clickedBlock The block the player interacted with
+     */
+    public void onClueInteract(Player player, ArenaClueLocation clickedBlock) {
+        // Empty implementation
     }
 
     protected RoomStateManager getStateManager() {

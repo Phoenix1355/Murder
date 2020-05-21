@@ -63,4 +63,10 @@ public class RoomConfigHandler extends BaseConfigHandler {
 
         return getRoomsSection().getConfigurationSection(roomId);
     }
+
+    public void createRoom(String roomId) {
+        getRoomsSection().createSection(roomId);
+
+        save();
+    }
 }

@@ -1,6 +1,7 @@
 package net.phoenix1355.murder.commands.arguments;
 
 import net.phoenix1355.murder.commands.CommandUsage;
+import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -17,7 +18,10 @@ public abstract class BaseArgument {
     }
 
     protected void sendUsage(CommandSender sender) {
-        sender.sendMessage("Correct usage: " + getUsage());
+        if (getUsage() != null) {
+            sender.sendMessage(ChatFormatter.format("Usage:"));
+            getUsage().send(sender);
+        }
     }
 
     public CommandUsage getUsage() {
