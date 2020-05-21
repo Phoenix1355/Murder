@@ -16,7 +16,7 @@ public class LeaveArgument extends BaseArgument {
 
         if (room != null) {
             sender.sendMessage(ChatFormatter.format("Leaving room &b%s", room.getId()));
-            room.leave((Player) sender);
+            room.getEventHandler().leave((Player) sender);
             return true;
         }
 

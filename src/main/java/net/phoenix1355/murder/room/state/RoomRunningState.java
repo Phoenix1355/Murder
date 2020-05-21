@@ -21,6 +21,8 @@ import java.util.List;
 public class RoomRunningState extends BaseRoomState {
     @Override
     public void onStart() {
+        getRoom().getArrowHandler().start();
+
         try {
             for (User user : getRoom().getUsers()) {
                 getRoom().getArenaHandler().spawnUser(user);
@@ -56,7 +58,7 @@ public class RoomRunningState extends BaseRoomState {
 
     @Override
     public void onStop() {
-
+        getRoom().getArrowHandler().reset();
     }
 
     @Override
@@ -73,6 +75,10 @@ public class RoomRunningState extends BaseRoomState {
             getRoom().broadcast(ChatFormatter.format("The &bbystanders&e win!"));
             gameOver();
             return;
+        }
+
+        if (victim.getRole() == User.Role.DETECTIVE) {
+            getRoom().dropBow(victim.getPlayer().getLocation());
         }
 
         victim.setRole(User.Role.SPECTATOR);
@@ -112,17 +118,15 @@ public class RoomRunningState extends BaseRoomState {
             return;
         }
 
-        user.setRole(User.Role.BYSTANDER);
-        user.startBowCooldown();
+        getRoom().makeBystander(user);
 
+        user.startBowCooldown();
         int cooldownTime = MainConfigHandler.getInstance().getBowCooldownTime();
-        List<PotionEffect> effects = Arrays.asList(
+
+        user.getPlayer().addPotionEffects(Arrays.asList(
                 new PotionEffect(PotionEffectType.SLOW, cooldownTime * 20, 2),
                 new PotionEffect(PotionEffectType.BLINDNESS, cooldownTime * 20, 2)
-        );
-        user.getPlayer().addPotionEffects(effects);
-
-        user.getPlayer().getInventory().clear();
+        ));
 
         // Drop a new bow
         getRoom().dropBow(user.getPlayer().getLocation());

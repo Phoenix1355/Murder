@@ -3,20 +3,21 @@ package net.phoenix1355.murder.particles.effects;
 import net.phoenix1355.murder.particles.BaseParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.World;
 
 public class GlowParticleEffect extends BaseParticleEffect {
-    private static final Particle _particle = Particle.VILLAGER_HAPPY;
-    private final World _world;
+    private static final Particle PARTICLE = Particle.VILLAGER_HAPPY;
 
     public GlowParticleEffect(Location location) {
-        super(location.clone().add(.5, .5, .5)); // Add centering offset
-
-        _world = getLocation().getWorld();
+        super(location);
     }
 
     @Override
     public void run() {
-        _world.spawnParticle(_particle, getLocation(), 1, .2f, .2f, .2f);
+        spawnParticle(PARTICLE, getLocation(), 1, .2f, .2f, .2f);
+    }
+
+    @Override
+    public long getDelay() {
+        return 5;
     }
 }

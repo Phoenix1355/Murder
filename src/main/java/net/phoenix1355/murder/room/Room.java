@@ -1,14 +1,9 @@
 package net.phoenix1355.murder.room;
 
 import net.phoenix1355.murder.Murder;
-import net.phoenix1355.murder.arena.Arena;
-import net.phoenix1355.murder.arena.ArenaClueLocation;
 import net.phoenix1355.murder.user.User;
-import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,7 +17,9 @@ public class Room {
     private final Random _random = new Random();
     private final String _roomId;
     private final RoomStateManager _roomStateManager;
+    private final RoomEventHandler _roomEventHandler;
     private final RoomArenaHandler _roomArenaHandler;
+    private final RoomArrowHandler _roomArrowHandler;
     private final RoomSettings _settings;
     private final List<User> _users = new ArrayList<>();
     private final List<Item> _spawnedItems = new ArrayList<>();
@@ -30,7 +27,9 @@ public class Room {
     public Room(String roomId) {
         _roomId = roomId;
         _roomStateManager = new RoomStateManager(this);
+        _roomEventHandler = new RoomEventHandler(this);
         _roomArenaHandler = new RoomArenaHandler();
+        _roomArrowHandler = new RoomArrowHandler();
         _settings = new RoomSettings(roomId);
 
         // Set default room state
@@ -41,45 +40,10 @@ public class Room {
         return _roomId;
     }
 
-    public RoomArenaHandler getArenaHandler() {
-        return _roomArenaHandler;
-    }
-
-    public void join(Player player) throws RoomException {
-        if (getUser(player) != null) {
-            throw new RoomException("Player is already in room " + _roomId);
-        }
-
-        User user = new User(player);
-        _users.add(user);
-
-        _roomStateManager.getState().onUserJoin(user);
-    }
-
-    public void leave(Player player) {
-        User user = getUser(player);
-        _users.remove(user);
-
-        _roomStateManager.getState().onUserLeave(user);
-    }
-
-    public void kill(Player victim, Player attacker) {
-        _roomStateManager.getState().onUserDeath(getUser(victim), getUser(attacker));
-    }
-
-    public void clueInteract(Player player, Block clickedBlock) {
-        User user = getUser(player);
-
-        if (user == null)
-            return;
-
-        ArenaClueLocation clueLocation = getArenaHandler().getClue(clickedBlock.getLocation());
-
-        if (clueLocation == null)
-            return;
-
-        _roomStateManager.getState().onClueInteract(player, clueLocation);
-    }
+    public RoomStateManager getStateManager() { return _roomStateManager; }
+    public RoomEventHandler getEventHandler() { return _roomEventHandler; }
+    public RoomArenaHandler getArenaHandler() { return _roomArenaHandler; }
+    public RoomArrowHandler getArrowHandler() { return _roomArrowHandler; }
 
     public List<User> getUsers() {
         return _users;
@@ -109,8 +73,7 @@ public class Room {
 
         for (User user : getUsers()) {
             for (User u : getUsers()) {
-                if (user != u)
-                    user.getPlayer().showPlayer(plugin, u.getPlayer());
+                user.getPlayer().showPlayer(plugin, u.getPlayer());
             }
         }
     }
@@ -141,10 +104,6 @@ public class Room {
         return null;
     }
 
-    public boolean contains(User user) {
-        return getUsers().contains(user);
-    }
-
     public RoomSettings getSettings() {
         return _settings;
     }
@@ -161,6 +120,9 @@ public class Room {
     public void reset() {
         // This will return all players to the lobby and clean up the arena
         getArenaHandler().reset();
+        getArrowHandler().reset();
+
+        showPlayers();
 
         for (User user : getUsers()) {
             RoomUtils.resetUser(user);
@@ -181,5 +143,41 @@ public class Room {
 
         ItemStack bow = new ItemStack(Material.BOW, 1);
         _spawnedItems.add(location.getWorld().dropItemNaturally(location, bow));
+    }
+
+    public void makeDetective(User user) {
+        user.playSound(Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
+        user.setRole(User.Role.DETECTIVE);
+        user.addBow();
+        user.addArrow();
+
+        _roomArrowHandler.addDetective(user);
+    }
+
+    public void makeMurderer(User user) {
+        user.playSound(Sound.AMBIENT_CAVE, 1, 1);
+
+        user.setRole(User.Role.MURDERER);
+        user.getPlayer().setFoodLevel(20); // Allow sprinting
+        user.addMurderWeapon();
+    }
+
+    public void makeBystander(User user) {
+        user.setRole(User.Role.BYSTANDER);
+        user.getPlayer().getInventory().clear();
+        user.getPlayer().setFoodLevel(6); // Prevent sprinting
+        user.resetClues();
+
+        _roomArrowHandler.removeDetective(user);
+    }
+
+    public void addUser(User user) {
+        if (!_users.contains(user))
+            _users.add(user);
+    }
+
+    public void removeUser(User user) {
+        _users.remove(user);
     }
 }

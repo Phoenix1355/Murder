@@ -32,7 +32,7 @@ public class JoinArgument extends BaseArgument {
         }
 
         try {
-            room.join((Player) sender);
+            room.getEventHandler().onPlayerJoin((Player) sender);
         } catch (RoomException e) {
             sender.sendMessage(ChatFormatter.format("Unexpected error: &c%s", e.getMessage()));
             return true;

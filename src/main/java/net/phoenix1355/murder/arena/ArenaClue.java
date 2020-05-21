@@ -33,8 +33,6 @@ public class ArenaClue {
                 return;
             }
 
-            Log.info("Spawning new clue at %s", block.getLocation().toString());
-
             // Spawn block
             block.setType(CLUE_MATERIAL);
 
@@ -44,6 +42,7 @@ public class ArenaClue {
 
             // Create particle effect
             _effect = new GlowParticleEffect(_location.getLocation());
+            _effect.setOffset(.5, .5, .5);
         }
     }
 

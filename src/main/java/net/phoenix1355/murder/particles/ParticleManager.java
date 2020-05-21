@@ -21,13 +21,13 @@ public class ParticleManager extends BukkitRunnable {
     private ParticleManager() {
         _particleEffects = new ArrayList<>();
 
-        runTaskTimer(JavaPlugin.getPlugin(Murder.class), 5L, 5L);
+        runTaskTimer(JavaPlugin.getPlugin(Murder.class), 1L, 1L);
     }
 
     @Override
     public void run() {
         for (ParticleEffect effect : _particleEffects) {
-            effect.run();
+            ((BaseParticleEffect) effect).runInternal();
         }
     }
 
