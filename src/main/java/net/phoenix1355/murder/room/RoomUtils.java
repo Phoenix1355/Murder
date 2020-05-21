@@ -13,6 +13,10 @@ public class RoomUtils {
         return rm.getRoomFromPlayer(player) == rm.getRoomFromPlayer(target);
     }
 
+    public static boolean isInRoom(Player player) {
+        return RoomManager.getInstance().getRoomFromPlayer(player) != null;
+    }
+
     public static void resetUser(User user) {
         Player player = user.getPlayer();
         user.setRole(User.Role.SPECTATOR);

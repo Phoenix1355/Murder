@@ -13,6 +13,7 @@ public class User {
     private final Player _player;
     private Role _role;
     private int _clueCount;
+    private long _bowCooldownTimestamp;
 
     public User(Player player) {
         _player = player;
@@ -78,6 +79,15 @@ public class User {
                 (getPlayer().getInventory().getHeldItemSlot() + 1) % 9,
                 new ItemStack(murderWeapon, 1)
         );
+    }
+
+    public void startBowCooldown() {
+        _bowCooldownTimestamp = System.currentTimeMillis();
+    }
+
+    public boolean hasBowCooldown() {
+        int cooldownTime = MainConfigHandler.getInstance().getBowCooldownTime();
+        return System.currentTimeMillis() / 1000 - _bowCooldownTimestamp / 1000  < cooldownTime;
     }
 
     public enum Role {

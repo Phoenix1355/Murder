@@ -5,11 +5,12 @@ import net.phoenix1355.murder.arena.Arena;
 import net.phoenix1355.murder.arena.ArenaClueLocation;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class Room {
     private final RoomArenaHandler _roomArenaHandler;
     private final RoomSettings _settings;
     private final List<User> _users = new ArrayList<>();
+    private final List<Item> _spawnedItems = new ArrayList<>();
 
     public Room(String roomId) {
         _roomId = roomId;
@@ -61,10 +63,8 @@ public class Room {
         _roomStateManager.getState().onUserLeave(user);
     }
 
-    public void kill(Player player) {
-        User user = getUser(player);
-
-        _roomStateManager.getState().onUserDeath(user);
+    public void kill(Player victim, Player attacker) {
+        _roomStateManager.getState().onUserDeath(getUser(victim), getUser(attacker));
     }
 
     public void clueInteract(Player player, Block clickedBlock) {
@@ -167,5 +167,19 @@ public class Room {
             user.getPlayer().teleport(getSettings().getLobbySpawnLocation());
             user.getPlayer().setGameMode(GameMode.ADVENTURE);
         }
+
+        for (Item item : _spawnedItems) {
+            item.remove();
+        }
+    }
+
+    public void dropBow(Location location) {
+        World world = location.getWorld();
+
+        if (world == null)
+            return;
+
+        ItemStack bow = new ItemStack(Material.BOW, 1);
+        _spawnedItems.add(location.getWorld().dropItemNaturally(location, bow));
     }
 }

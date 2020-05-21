@@ -37,7 +37,7 @@ public abstract class BaseRoomState extends BukkitRunnable {
     public abstract void onStop();
 
     /**
-     * Lifecycle event for when a player joins the room
+     * Event for when a player joins the room
      * @param user The player that joined the room
      */
     public void onUserJoin(User user) {
@@ -45,7 +45,7 @@ public abstract class BaseRoomState extends BukkitRunnable {
     }
 
     /**
-     * Lifecycle event for when a player leaves the room
+     * Event for when a player leaves the room
      * @param user The player that leaves
      */
     public void onUserLeave(User user) {
@@ -53,10 +53,11 @@ public abstract class BaseRoomState extends BukkitRunnable {
     }
 
     /**
-     * Lifecycle event for when a player is killed
-     * @param user The user who is killed
+     * Event for when a player is killed
+     * @param victim The user who is killed
+     * @param attacker The user who caused the death
      */
-    public void onUserDeath(User user) {
+    public void onUserDeath(User victim, User attacker) {
         // Empty implementation
     }
 

@@ -25,4 +25,8 @@ public class MainConfigHandler extends BaseConfigHandler {
 
         return material != null ? Material.getMaterial(material) : Material.IRON_SWORD;
     }
+
+    public int getBowCooldownTime() {
+        return getConfig().getInt("detective-bow-cooldown", 5);
+    }
 }
