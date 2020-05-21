@@ -3,13 +3,16 @@ package net.phoenix1355.murder.arena;
 import net.phoenix1355.murder.config.ArenaConfigHandler;
 import org.bukkit.Location;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ArenaManager {
     private static ArenaManager _instance;
 
     private final Map<String, Arena> _arenas = new HashMap<>();
+    private final List<String> _lockedArenas = new ArrayList<>();
 
     private ArenaManager() {
         Map<String, Arena> storedArenas = ArenaConfigHandler.getInstance().loadArenas();
@@ -24,19 +27,31 @@ public class ArenaManager {
         return _instance;
     }
 
-    public void createArena(String roomId) throws ArenaException {
-        if (_arenas.get(roomId) != null) {
-            throw new ArenaException(String.format("Arena with id &b%s&e already exists", roomId));
+    public void lockArena(String arenaId) throws ArenaException {
+        if (_lockedArenas.contains(arenaId)) {
+            throw new ArenaException("Trying to lock an already locked arena");
         }
 
-        _arenas.put(roomId, new Arena(roomId));
+        _lockedArenas.add(arenaId);
     }
 
-    public void createArenaSpawn(String roomId, Location location) throws ArenaException {
-        Arena arena = _arenas.get(roomId);
+    public void unlockArena(String arenaId) {
+        _lockedArenas.remove(arenaId);
+    }
+
+    public void createArena(String arenaId) throws ArenaException {
+        if (_arenas.get(arenaId) != null) {
+            throw new ArenaException(String.format("Arena with id &b%s&e already exists", arenaId));
+        }
+
+        _arenas.put(arenaId, new Arena(arenaId));
+    }
+
+    public void createArenaSpawn(String arenaId, Location location) throws ArenaException {
+        Arena arena = _arenas.get(arenaId);
 
         if (arena == null) {
-            throw new ArenaException(String.format("Arena &b%s&e doesn't exist", roomId));
+            throw new ArenaException(String.format("Arena &b%s&e doesn't exist", arenaId));
         }
 
         arena.addSpawnLocation(location);
@@ -48,5 +63,25 @@ public class ArenaManager {
 
     public Map<String, Arena> getAllArenas() {
         return _arenas;
+    }
+
+    public void createArenaClue(String arenaId, Location location) throws ArenaException {
+        Arena arena = _arenas.get(arenaId);
+
+        if (arena == null) {
+            throw new ArenaException(String.format("Arena &b%s&e doesn't exist", arenaId));
+        }
+
+        arena.getClueHandler().addClueLocation(location);
+    }
+
+    public void setArenaLimbo(String arenaId, Location location) throws ArenaException {
+        Arena arena = _arenas.get(arenaId);
+
+        if (arena == null) {
+            throw new ArenaException(String.format("Arena &b%s&e doesn't exist", arenaId));
+        }
+
+        arena.setLimboLocation(location);
     }
 }

@@ -1,10 +1,13 @@
 package net.phoenix1355.murder.room;
 
 import net.phoenix1355.murder.Murder;
+import net.phoenix1355.murder.arena.Arena;
+import net.phoenix1355.murder.arena.ArenaClueLocation;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,12 +21,14 @@ public class Room {
     private final Random _random = new Random();
     private final String _roomId;
     private final RoomStateManager _roomStateManager;
+    private final RoomArenaHandler _roomArenaHandler;
     private final RoomSettings _settings;
     private final List<User> _users = new ArrayList<>();
 
     public Room(String roomId) {
         _roomId = roomId;
         _roomStateManager = new RoomStateManager(this);
+        _roomArenaHandler = new RoomArenaHandler();
         _settings = new RoomSettings(roomId);
 
         // Set default room state
@@ -32,6 +37,10 @@ public class Room {
 
     public String getId() {
         return _roomId;
+    }
+
+    public RoomArenaHandler getArenaHandler() {
+        return _roomArenaHandler;
     }
 
     public void join(Player player) throws RoomException {
@@ -56,6 +65,20 @@ public class Room {
         User user = getUser(player);
 
         _roomStateManager.getState().onUserDeath(user);
+    }
+
+    public void clueInteract(Player player, Block clickedBlock) {
+        User user = getUser(player);
+
+        if (user == null)
+            return;
+
+        ArenaClueLocation clueLocation = getArenaHandler().getClue(clickedBlock.getLocation());
+
+        if (clueLocation == null)
+            return;
+
+        _roomStateManager.getState().onClueInteract(player, clueLocation);
     }
 
     public List<User> getUsers() {
@@ -124,5 +147,25 @@ public class Room {
 
     public RoomSettings getSettings() {
         return _settings;
+    }
+
+    public User getMurderer() {
+        for (User user : getUsers()) {
+            if (user.getRole() == User.Role.MURDERER)
+                return user;
+        }
+
+        return null;
+    }
+
+    public void reset() {
+        // This will return all players to the lobby and clean up the arena
+        getArenaHandler().reset();
+
+        for (User user : getUsers()) {
+            RoomUtils.resetUser(user);
+            user.getPlayer().teleport(getSettings().getLobbySpawnLocation());
+            user.getPlayer().setGameMode(GameMode.ADVENTURE);
+        }
     }
 }

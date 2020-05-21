@@ -1,9 +1,11 @@
 package net.phoenix1355.murder.room.state;
 
 import net.phoenix1355.murder.room.RoomStateManager;
+import net.phoenix1355.murder.room.RoomUtils;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 
 public class RoomWaitingState extends BaseRoomState {
     private static final int MIN_PLAYERS = 2;
@@ -11,12 +13,8 @@ public class RoomWaitingState extends BaseRoomState {
 
     @Override
     public void onStart() {
-        for (User user : getRoom().getUsers()) {
-            user.setRole(User.Role.SPECTATOR);
-            user.getPlayer().getInventory().clear();
-            user.getPlayer().teleport(getRoom().getSettings().getLobbySpawnLocation());
-            user.getPlayer().setGameMode(GameMode.ADVENTURE);
-        }
+        // Cleanup arena
+        getRoom().reset();
 
         checkPlayerCount();
     }
@@ -48,11 +46,9 @@ public class RoomWaitingState extends BaseRoomState {
         user.getPlayer().setGameMode(GameMode.ADVENTURE);
 
         getRoom().broadcast(
-                String.format(
-                        "%s has joined the room (%d/%d)",
-                        user.getPlayer().getName(),
-                        getStateManager().getRoom().getUsers().size(),
-                        MIN_PLAYERS
+                ChatFormatter.format(
+                        "%s has joined the room",
+                        user.getPlayer().getName()
                 )
         );
 
@@ -65,6 +61,7 @@ public class RoomWaitingState extends BaseRoomState {
     @Override
     public void onUserLeave(User user) {
         getRoom().broadcast(ChatFormatter.format("&b%s&e has left the room", user.getPlayer().getName()));
+        checkPlayerCount();
 
         if (user.getPlayer().getBedSpawnLocation() != null)
             user.getPlayer().teleport(user.getPlayer().getBedSpawnLocation());
@@ -74,9 +71,16 @@ public class RoomWaitingState extends BaseRoomState {
 
     private void checkPlayerCount() {
         if (getRoom().getUsers().size() >= MIN_PLAYERS) {
-            setTimer(20);
-            _ready = true;
+            if (!_ready) {
+                setTimer(20);
+                _ready = true;
+            }
         } else {
+            getRoom().broadcast(ChatFormatter.format(
+                    "Not enough players to start the game (&b%d/%d&e)",
+                    getStateManager().getRoom().getUsers().size(),
+                    MIN_PLAYERS)
+            );
             _ready = false;
         }
     }

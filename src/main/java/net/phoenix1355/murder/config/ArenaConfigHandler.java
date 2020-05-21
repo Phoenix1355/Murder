@@ -1,6 +1,7 @@
 package net.phoenix1355.murder.config;
 
 import net.phoenix1355.murder.arena.Arena;
+import net.phoenix1355.murder.arena.ArenaClueLocation;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,17 +37,18 @@ public class ArenaConfigHandler extends BaseConfigHandler {
         }
 
         for (String arenaId : keys) {
-            List<Location> spawns = getArenaSpawns(arenaId);
-            List<Location> clues = getArenaClues(arenaId);
+            List<Location> spawns = getArenaSpawnLocations(arenaId);
+            List<ArenaClueLocation> clues = getArenaClueLocations(arenaId);
+            Location limboLocation = getArenaLimboLocation(arenaId);
 
-            Arena arena = new Arena(arenaId, spawns, clues);
+            Arena arena = new Arena(arenaId, spawns, clues, limboLocation);
             arenas.put(arenaId, arena);
         }
 
         return arenas;
     }
 
-    private List<Location> getArenaSpawns(String arenaId) {
+    private List<Location> getArenaSpawnLocations(String arenaId) {
         ConfigurationSection section = getArenaSection(arenaId);
         List<Location> spawns = new ArrayList<>();
 
@@ -57,15 +59,23 @@ public class ArenaConfigHandler extends BaseConfigHandler {
         return spawns;
     }
 
-    private List<Location> getArenaClues(String arenaId) {
+    private List<ArenaClueLocation> getArenaClueLocations(String arenaId) {
         ConfigurationSection section = getArenaSection(arenaId);
-        List<Location> spawns = new ArrayList<>();
+        List<ArenaClueLocation> clueLocations = new ArrayList<>();
 
-        for (String location : section.getStringList("clues")) {
-            spawns.add(ConfigUtils.locationFromString(location));
+        for (String str : section.getStringList("clues")) {
+            Location location = ConfigUtils.locationFromString(str);
+            clueLocations.add(new ArenaClueLocation(location));
         }
 
-        return spawns;
+        return clueLocations;
+    }
+
+    private Location getArenaLimboLocation(String arenaId) {
+        ConfigurationSection section = getArenaSection(arenaId);
+
+        String location = section.getString("limbo");
+        return location != null ? ConfigUtils.locationFromString(location) : null;
     }
 
     public ConfigurationSection getArenasSection() {
@@ -94,12 +104,30 @@ public class ArenaConfigHandler extends BaseConfigHandler {
         save();
     }
 
-    public void addArenaSpawn(String arenaId, Location location) {
+    public void addArenaSpawnLocation(String arenaId, Location location) {
         ConfigurationSection section = getArenaSection(arenaId);
 
         List<String> spawns = section.getStringList("spawns");
         spawns.add(ConfigUtils.locationToString(location));
         section.set("spawns", spawns);
+
+        save();
+    }
+
+    public void addArenaClueLocation(String arenaId, Location location) {
+        ConfigurationSection section = getArenaSection(arenaId);
+
+        List<String> clues = section.getStringList("clues");
+        clues.add(ConfigUtils.locationToString(location));
+        section.set("clues", clues);
+
+        save();
+    }
+
+    public void setArenaLimboLocation(String arenaId, Location location) {
+        ConfigurationSection section = getArenaSection(arenaId);
+
+        section.set("limbo", ConfigUtils.locationToString(location));
 
         save();
     }

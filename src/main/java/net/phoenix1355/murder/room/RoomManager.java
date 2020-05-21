@@ -17,10 +17,15 @@ public class RoomManager {
     }
 
     public static RoomManager getInstance() {
-        if (_instance == null)
-            _instance = new RoomManager();
+        if (_instance == null) {
+            throw new RuntimeException("Trying to fetch instance without before init was called!");
+        }
 
         return _instance;
+    }
+
+    public static void init() {
+        _instance = new RoomManager();
     }
 
     public void createRoom(String roomId) throws RoomException {
@@ -52,5 +57,11 @@ public class RoomManager {
 
     public Map<String, Room> getAllRooms() {
         return _rooms;
+    }
+
+    public void reset() {
+        for (Map.Entry<String, Room> roomSet : _rooms.entrySet()) {
+            roomSet.getValue().reset();
+        }
     }
 }

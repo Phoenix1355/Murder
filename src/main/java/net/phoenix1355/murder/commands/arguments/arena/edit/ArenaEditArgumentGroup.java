@@ -3,6 +3,7 @@ package net.phoenix1355.murder.commands.arguments.arena.edit;
 import net.phoenix1355.murder.commands.CommandUsage;
 import net.phoenix1355.murder.commands.arguments.BaseArgumentGroup;
 import net.phoenix1355.murder.commands.arguments.arena.edit.clue.ArenaClueArgumentGroup;
+import net.phoenix1355.murder.commands.arguments.arena.edit.limbo.ArenaLimboArgumentGroup;
 import net.phoenix1355.murder.commands.arguments.arena.edit.spawn.ArenaSpawnArgumentGroup;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,7 @@ public class ArenaEditArgumentGroup extends BaseArgumentGroup {
     public ArenaEditArgumentGroup() {
         registerArgument(new ArenaSpawnArgumentGroup());
         registerArgument(new ArenaClueArgumentGroup());
+        registerArgument(new ArenaLimboArgumentGroup());
     }
 
     @Override

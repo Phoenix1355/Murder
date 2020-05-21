@@ -1,4 +1,4 @@
-package net.phoenix1355.murder.commands.arguments.arena.edit.spawn;
+package net.phoenix1355.murder.commands.arguments.arena.edit.clue;
 
 import net.phoenix1355.murder.arena.ArenaException;
 import net.phoenix1355.murder.arena.ArenaManager;
@@ -10,14 +10,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SpawnCreateArgument extends BaseArgument {
+public class ClueCreateArgument extends BaseArgument {
     @Override
     public boolean handleCommand(CommandSender sender, Command command, String[] args, int argIndex) {
         ArenaManager rm = ArenaManager.getInstance();
         Location location = ((Player) sender).getLocation();
 
         try {
-            rm.createArenaSpawn(args[2], new Location(
+            rm.createArenaClue(args[2], new Location(
                     location.getWorld(),
                     location.getBlockX(),
                     location.getBlockY(),
@@ -25,7 +25,7 @@ public class SpawnCreateArgument extends BaseArgument {
             ));
 
             sender.sendMessage(ChatFormatter.format(
-                    "&eCreated new spawn for &b%s&e at &b%s, %s, %s",
+                    "&eCreated new clue location for &b%s&e at &b%s, %s, %s",
                     args[2], location.getBlockX(), location.getBlockY(), location.getBlockZ()
             ));
         } catch (ArenaException e) {
@@ -47,11 +47,11 @@ public class SpawnCreateArgument extends BaseArgument {
 
     @Override
     public String requirePermission() {
-        return "murder.admin.arena.edit.spawn.create";
+        return "murder.admin.arena.edit.clue.set";
     }
 
     @Override
     public CommandUsage getUsage() {
-        return new CommandUsage("/mm arena edit <arena> spawn create", "Creates a new arena spawn at your location");
+        return new CommandUsage("/mm arena edit <arena> clue create", "Creates a new clue spawn at your location");
     }
 }

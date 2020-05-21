@@ -5,7 +5,7 @@ import net.phoenix1355.murder.commands.arguments.BaseArgumentGroup;
 public class ArenaClueArgumentGroup extends BaseArgumentGroup {
 
     public ArenaClueArgumentGroup() {
-        registerArgument(new ClueSetArgument());
+        registerArgument(new ClueCreateArgument());
         registerArgument(new ClueDeleteArgument());
     }
 

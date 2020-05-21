@@ -1,17 +1,26 @@
 package net.phoenix1355.murder.room.state;
 
+import net.phoenix1355.murder.arena.ArenaClueLocation;
+import net.phoenix1355.murder.arena.ArenaException;
 import net.phoenix1355.murder.room.RoomStateManager;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 public class RoomRunningState extends BaseRoomState {
     @Override
     public void onStart() {
-        getRoom().showPlayers();
-
-        // TODO: Teleport players to random spawn locations in arena
+        try {
+            for (User user : getRoom().getUsers()) {
+                getRoom().getArenaHandler().spawnUser(user);
+            }
+        } catch (ArenaException e) {
+            getRoom().broadcast(e.getMessage());
+            failure();
+            return;
+        }
 
         // Setup gamer timer
         setTimer(270);
@@ -19,6 +28,10 @@ public class RoomRunningState extends BaseRoomState {
 
     @Override
     public void onUpdate() {
+        if (getTimer() % 5 == 0) {
+            getRoom().getArenaHandler().spawnRandomClue();
+        }
+
         if (getTimer() == 0) {
             getRoom().broadcast(ChatFormatter.format("Time has run out. &bBystanders&e win!"));
             getStateManager().setState(RoomStateManager.RoomState.ENDING);
@@ -57,13 +70,27 @@ public class RoomRunningState extends BaseRoomState {
 
         if (getRoom().getBystanders().isEmpty() && getRoom().getDetectives().isEmpty()) {
             // Murder wins, end the game
-            getRoom().broadcast(ChatFormatter.format("The &cmurderer&e has killed everyone! It was &c%s&e!", victim.getPlayer().getName()));
+            getRoom().broadcast(ChatFormatter.format("The &cmurderer&e has killed everyone! It was &c%s&e!", getRoom().getMurderer().getPlayer().getName()));
             getRoom().broadcast(ChatFormatter.format("The &cmurderer&e wins!"));
             gameOver();
         }
     }
 
+    @Override
+    public void onClueInteract(Player player, ArenaClueLocation clickedBlock) {
+        User user = getRoom().getUser(player);
+
+        user.foundClue();
+
+        clickedBlock.remove();
+    }
+
     private void gameOver() {
         getStateManager().setState(RoomStateManager.RoomState.ENDING);
+    }
+
+    private void failure() {
+        getRoom().broadcast(ChatFormatter.format("Unexpected game error. Returning to lobby..."));
+        getStateManager().setState(RoomStateManager.RoomState.WAITING);
     }
 }
