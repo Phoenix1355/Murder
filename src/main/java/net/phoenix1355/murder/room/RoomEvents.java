@@ -4,8 +4,8 @@ import net.phoenix1355.murder.Murder;
 import net.phoenix1355.murder.arena.ArenaClue;
 import net.phoenix1355.murder.config.MainConfigHandler;
 import net.phoenix1355.murder.user.User;
+import net.phoenix1355.murder.utils.Log;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -302,6 +303,24 @@ public class RoomEvents implements Listener {
         }
 
         Player player = (Player) e.getEntity();
+        Room room = getPlayerRoom(player);
+
+        if (room != null) {
+            e.setCancelled(true);
+        }
+    }
+
+    /**
+     * Prevent players from destroying paintings and signs while in a room
+     * @param e The hanging break event
+     */
+    @EventHandler
+    public void onHangingBreak(HangingBreakByEntityEvent e) {
+        if (!(e.getRemover() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) e.getRemover();
         Room room = getPlayerRoom(player);
 
         if (room != null) {

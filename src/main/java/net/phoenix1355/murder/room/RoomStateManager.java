@@ -1,8 +1,10 @@
 package net.phoenix1355.murder.room;
 
-import net.phoenix1355.murder.Murder;
 import net.phoenix1355.murder.room.state.*;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.phoenix1355.murder.room.state.ending.RoomBaseEndingState;
+import net.phoenix1355.murder.room.state.ending.RoomBystanderWinState;
+import net.phoenix1355.murder.room.state.ending.RoomMurderWinState;
+import net.phoenix1355.murder.room.state.ending.RoomTimeoutState;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -48,7 +50,9 @@ public class RoomStateManager {
         WAITING(RoomWaitingState.class),
         STARTING(RoomStartingState.class),
         RUNNING(RoomRunningState.class),
-        ENDING(RoomEndingState.class);
+        ENDING_MURDER_WIN(RoomMurderWinState.class),
+        ENDING_BYSTANDER_WIN(RoomBystanderWinState.class),
+        ENDING_TIMEOUT(RoomTimeoutState.class);
 
         private final Class<?> _targetState;
 

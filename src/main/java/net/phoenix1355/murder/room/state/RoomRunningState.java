@@ -6,6 +6,7 @@ import net.phoenix1355.murder.config.MainConfigHandler;
 import net.phoenix1355.murder.room.RoomStateManager;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -44,8 +45,7 @@ public class RoomRunningState extends BaseRoomState {
         }
 
         if (getTimer() == 0) {
-            getRoom().broadcast(ChatFormatter.format("Time has run out. &bBystanders&e win!"));
-            getStateManager().setState(RoomStateManager.RoomState.ENDING);
+            getStateManager().setState(RoomStateManager.RoomState.ENDING_TIMEOUT);
             return;
         }
 
@@ -71,9 +71,7 @@ public class RoomRunningState extends BaseRoomState {
         // Check for possible game endings
         if (victim.getRole() == User.Role.MURDERER) {
             // Murder is dead, end the game
-            getRoom().broadcast(ChatFormatter.format("The &cmurderer&e was killed! It was &c%s&e!", victim.getPlayer().getName()));
-            getRoom().broadcast(ChatFormatter.format("The &bbystanders&e win!"));
-            gameOver();
+            getStateManager().setState(RoomStateManager.RoomState.ENDING_BYSTANDER_WIN);
             return;
         }
 
@@ -85,9 +83,8 @@ public class RoomRunningState extends BaseRoomState {
 
         if (getRoom().getBystanders().isEmpty() && getRoom().getDetectives().isEmpty()) {
             // Murder wins, end the game
-            getRoom().broadcast(ChatFormatter.format("The &cmurderer&e has killed everyone! It was &c%s&e!", getRoom().getMurderer().getPlayer().getName()));
-            getRoom().broadcast(ChatFormatter.format("The &cmurderer&e wins!"));
-            gameOver();
+            getStateManager().setState(RoomStateManager.RoomState.ENDING_MURDER_WIN);
+            return;
         }
 
         if (attacker != null && attacker.getRole() == User.Role.DETECTIVE) {
@@ -102,10 +99,6 @@ public class RoomRunningState extends BaseRoomState {
         user.foundClue();
 
         clickedBlock.remove();
-    }
-
-    private void gameOver() {
-        getStateManager().setState(RoomStateManager.RoomState.ENDING);
     }
 
     private void failure() {

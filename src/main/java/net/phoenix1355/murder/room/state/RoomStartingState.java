@@ -38,7 +38,7 @@ public class RoomStartingState extends BaseRoomState {
         getRoom().makeMurderer(murderer);
 
         murderer.getPlayer().sendTitle(ChatFormatter.format("&cYou are the murderer"), "", 10, 130, 10);
-        murderer.getPlayer().sendMessage(ChatFormatter.format("You are the murderer. Your job is to kill everyone without getting noticed. Good luck"));
+        murderer.getPlayer().sendMessage(ChatFormatter.format("You are the murderer. Kill everyone. Don't get caught..."));
 
         // Choose a random detective
         User detective = getRoom().getRandomBystander();

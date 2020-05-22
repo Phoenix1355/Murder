@@ -181,4 +181,16 @@ public class Room {
     public void removeUser(User user) {
         _users.remove(user);
     }
+
+    public void broadcastTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        broadcastTitle(null, title, subtitle, fadeIn, stay, fadeOut);
+    }
+
+    public void broadcastTitle(User.Role roleFilter, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        for (User user : _users) {
+            if (roleFilter == null || (user.getRole() == roleFilter)) {
+                user.getPlayer().sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+            }
+        }
+    }
 }
