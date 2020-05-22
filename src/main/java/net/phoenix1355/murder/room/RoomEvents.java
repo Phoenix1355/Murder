@@ -4,7 +4,6 @@ import net.phoenix1355.murder.Murder;
 import net.phoenix1355.murder.arena.ArenaClue;
 import net.phoenix1355.murder.config.MainConfigHandler;
 import net.phoenix1355.murder.user.User;
-import net.phoenix1355.murder.utils.Log;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -31,54 +30,62 @@ public class RoomEvents implements Listener {
 
     /**
      * Handle murder damage on bystanders/detectives
-     * @param e
+     *
+     * @param e Entity damage by entity event
      */
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player) || !(e.getEntity() instanceof Player)) {
+        if (!(e.getDamager() instanceof Player)
+                || !(e.getEntity() instanceof Player)) {
             return;
         }
 
-        if (!RoomUtils.areInSameRoom((Player) e.getDamager(), (Player) e.getEntity())) {
+        if (!RoomUtils.areInSameRoom((Player) e.getDamager(),
+                (Player) e.getEntity()
+        )) {
             return;
         }
 
         Room room = getPlayerRoom((Player) e.getDamager());
 
-        User attacker = room.getUser((Player) e.getDamager());
-        User victim = room.getUser((Player) e.getEntity());
+        Player attacker = (Player) e.getDamager();
+        Player victim = (Player) e.getEntity();
 
         e.setCancelled(true);
 
-        if (attacker.getRole() != User.Role.MURDERER || victim.getRole() == User.Role.MURDERER) {
+        if (room.getUser(attacker).getRole() != User.Role.MURDERER
+                || room.getUser(victim).getRole() == User.Role.MURDERER) {
             return;
         }
 
         Material murderWeapon = _configHandler.getMurderWeapon();
 
-        if (attacker.getPlayer().getInventory().getItemInMainHand().getType() != murderWeapon) {
+        if (attacker.getInventory().getItemInMainHand().getType()
+                != murderWeapon) {
             return;
         }
 
-        if (attacker.getPlayer().hasCooldown(murderWeapon)) {
+        if (attacker.hasCooldown(murderWeapon)) {
             return;
         }
 
-        room.getEventHandler().kill(victim.getPlayer(), attacker.getPlayer());
+        room.getEventHandler().kill(victim, attacker);
     }
 
     /**
      * Handle player getting hit by an arrow
+     *
      * @param e Arrow damage event
      */
     @EventHandler
     public void onArrowDamage(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Arrow && e.getEntity() instanceof Player)) {
+        if (!(e.getDamager() instanceof Arrow
+                && e.getEntity() instanceof Player)) {
             return;
         }
         Arrow arrow = (Arrow) e.getDamager();
 
-        if (!(arrow.getShooter() instanceof  Player)) {
+        if (!(arrow.getShooter() instanceof Player)) {
             return;
         }
 
@@ -108,6 +115,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Reset arrow respawn timer when detective uses bow
+     *
      * @param e Entity shoot bow event
      */
     @EventHandler
@@ -132,6 +140,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Disable re-pickup of arrows
+     *
      * @param e Arrow pickup event
      */
     @EventHandler
@@ -144,15 +153,18 @@ public class RoomEvents implements Listener {
 
     /**
      * When user interacts with an entity
+     *
      * @param event Player interaction event
      */
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.hasBlock() || event.getClickedBlock() == null) { // Interaction event wasn't related to a block
+        if (!event.hasBlock() || event.getClickedBlock() == null) {
+            // Interaction event wasn't related to a block
             return;
         }
 
-        if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK)
+                && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
         }
 
@@ -175,6 +187,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Prevent fall damage unless it's attempting suicide
+     *
      * @param e Entity damage event
      */
     @EventHandler
@@ -201,6 +214,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Handle item pickup when player picks up a bow
+     *
      * @param e Entity pickup event
      */
     @EventHandler
@@ -239,6 +253,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Prevent players from moving inventory items when in a room
+     *
      * @param e Inventory click event
      */
     @EventHandler
@@ -254,6 +269,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Disable item durability when in a room
+     *
      * @param e Player item damage event
      */
     @EventHandler
@@ -268,6 +284,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Show trails when murder is sprinting
+     *
      * @param e Player move event
      */
     @EventHandler
@@ -312,6 +329,7 @@ public class RoomEvents implements Listener {
 
     /**
      * Prevent players from destroying paintings and signs while in a room
+     *
      * @param e The hanging break event
      */
     @EventHandler

@@ -40,34 +40,66 @@ public class Room {
         return _roomId;
     }
 
-    public RoomStateManager getStateManager() { return _roomStateManager; }
-    public RoomEventHandler getEventHandler() { return _roomEventHandler; }
-    public RoomArenaHandler getArenaHandler() { return _roomArenaHandler; }
-    public RoomArrowHandler getArrowHandler() { return _roomArrowHandler; }
+    public RoomStateManager getStateManager() {
+        return _roomStateManager;
+    }
 
+    public RoomEventHandler getEventHandler() {
+        return _roomEventHandler;
+    }
+
+    public RoomArenaHandler getArenaHandler() {
+        return _roomArenaHandler;
+    }
+
+    public RoomArrowHandler getArrowHandler() {
+        return _roomArrowHandler;
+    }
+
+    /**
+     * Fetch a list of all users in the room
+     *
+     * @return List of users
+     */
     public List<User> getUsers() {
         return _users;
     }
 
+    /**
+     * Fetch a list of all users who are bystanders
+     *
+     * @return List of users
+     */
     public List<User> getBystanders() {
-        return _users
-                .stream()
-                .filter(user -> user.getRole() == User.Role.BYSTANDER)
-                .collect(Collectors.toList());
+        return _users.stream()
+                     .filter(user -> user.getRole() == User.Role.BYSTANDER)
+                     .collect(Collectors.toList());
     }
 
+    /**
+     * Fetch a random bystander
+     *
+     * @return User who is a bystander
+     */
     public User getRandomBystander() {
         List<User> bystanders = getBystanders();
         return bystanders.get(_random.nextInt(bystanders.size()));
     }
 
+    /**
+     * Fetch a list of all users who are detectives
+     *
+     * @return List of users
+     */
     public List<User> getDetectives() {
-        return _users
-                .stream()
-                .filter(user -> user.getRole() == User.Role.DETECTIVE)
-                .collect(Collectors.toList());
+        return _users.stream()
+                     .filter(user -> user.getRole() == User.Role.DETECTIVE)
+                     .collect(Collectors.toList());
     }
 
+    /**
+     * Make all players in room visible
+     */
     public void showPlayers() {
         JavaPlugin plugin = JavaPlugin.getPlugin(Murder.class);
 
@@ -78,6 +110,9 @@ public class Room {
         }
     }
 
+    /**
+     * Make all players in room invisible
+     */
     public void hidePlayers() {
         JavaPlugin plugin = JavaPlugin.getPlugin(Murder.class);
 
@@ -89,12 +124,23 @@ public class Room {
         }
     }
 
+    /**
+     * Broadcast message to all players
+     *
+     * @param message The message to broadcast
+     */
     public void broadcast(String message) {
         for (User user : getUsers()) {
             user.getPlayer().sendMessage(message);
         }
     }
 
+    /**
+     * Find a user from a given player
+     *
+     * @param player The player entity to match the user with
+     * @return The found user
+     */
     public User getUser(Player player) {
         for (User user : getUsers()) {
             if (user.is(player))
@@ -104,19 +150,18 @@ public class Room {
         return null;
     }
 
+    /**
+     * Get the settings of the room
+     *
+     * @return Room settings
+     */
     public RoomSettings getSettings() {
         return _settings;
     }
 
-    public User getMurderer() {
-        for (User user : getUsers()) {
-            if (user.getRole() == User.Role.MURDERER)
-                return user;
-        }
-
-        return null;
-    }
-
+    /**
+     * Reset the room and clean up arena, players and spawned items
+     */
     public void reset() {
         // This will return all players to the lobby and clean up the arena
         getArenaHandler().reset();
@@ -136,6 +181,11 @@ public class Room {
         }
     }
 
+    /**
+     * Drop a bow at a given location and saved the item for later cleanup
+     *
+     * @param location The location of the bow drop
+     */
     public void dropBow(Location location) {
         World world = location.getWorld();
 
@@ -146,6 +196,11 @@ public class Room {
         _spawnedItems.add(location.getWorld().dropItemNaturally(location, bow));
     }
 
+    /**
+     * Make a user a detective
+     *
+     * @param user The user to make a detective
+     */
     public void makeDetective(User user) {
         user.playSound(Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
@@ -156,6 +211,11 @@ public class Room {
         _roomArrowHandler.addDetective(user);
     }
 
+    /**
+     * Make a user a murderer
+     *
+     * @param user The user to make a murderer
+     */
     public void makeMurderer(User user) {
         user.playSound(Sound.AMBIENT_CAVE, 1, 1);
 
@@ -164,6 +224,11 @@ public class Room {
         user.addMurderWeapon();
     }
 
+    /**
+     * Make a user a bystander
+     *
+     * @param user The user to make a bystander
+     */
     public void makeBystander(User user) {
         user.setRole(User.Role.BYSTANDER);
         user.getPlayer().getInventory().clear();
@@ -173,24 +238,22 @@ public class Room {
         _roomArrowHandler.removeDetective(user);
     }
 
+    /**
+     * Adds a user to the room
+     *
+     * @param user The user to add
+     */
     public void addUser(User user) {
         if (!_users.contains(user))
             _users.add(user);
     }
 
+    /**
+     * Remove a user from the room
+     *
+     * @param user The user to remove
+     */
     public void removeUser(User user) {
         _users.remove(user);
-    }
-
-    public void broadcastTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        broadcastTitle(null, title, subtitle, fadeIn, stay, fadeOut);
-    }
-
-    public void broadcastTitle(User.Role roleFilter, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        for (User user : _users) {
-            if (roleFilter == null || (user.getRole() == roleFilter)) {
-                user.getPlayer().sendTitle(title, subtitle, fadeIn, stay, fadeOut);
-            }
-        }
     }
 }

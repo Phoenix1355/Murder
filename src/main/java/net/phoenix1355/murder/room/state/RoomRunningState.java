@@ -6,20 +6,20 @@ import net.phoenix1355.murder.config.MainConfigHandler;
 import net.phoenix1355.murder.room.RoomStateManager;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class RoomRunningState extends BaseRoomState {
+    private static final int GAME_TIME =
+            MainConfigHandler.getInstance().getGameTime();
+    private static final int CLUE_SPAWN_TIME =
+            MainConfigHandler.getInstance().getArenaCluesSpawnTime();
+
     @Override
     public void onStart() {
         getRoom().getArrowHandler().start();
@@ -35,12 +35,12 @@ public class RoomRunningState extends BaseRoomState {
         }
 
         // Setup gamer timer
-        setTimer(270);
+        setTimer(GAME_TIME);
     }
 
     @Override
     public void onUpdate() {
-        if (getTimer() % 5 == 0) {
+        if (getTimer() % CLUE_SPAWN_TIME == 0) {
             getRoom().getArenaHandler().spawnRandomClue();
         }
 
@@ -114,7 +114,7 @@ public class RoomRunningState extends BaseRoomState {
         getRoom().makeBystander(user);
 
         user.startBowCooldown();
-        int cooldownTime = MainConfigHandler.getInstance().getBowCooldownTime();
+        int cooldownTime = MainConfigHandler.getInstance().getDetectiveRechargeTime();
 
         user.getPlayer().addPotionEffects(Arrays.asList(
                 new PotionEffect(PotionEffectType.SLOW, cooldownTime * 20, 2),
