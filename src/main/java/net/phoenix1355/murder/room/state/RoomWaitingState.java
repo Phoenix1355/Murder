@@ -5,7 +5,6 @@ import net.phoenix1355.murder.room.RoomUtils;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.GameMode;
-import org.bukkit.attribute.Attribute;
 
 public class RoomWaitingState extends BaseRoomState {
     private static final int MIN_PLAYERS = 2;

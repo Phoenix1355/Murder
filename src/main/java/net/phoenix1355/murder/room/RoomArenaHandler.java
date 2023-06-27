@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class RoomArenaHandler {
-    private static final int MAX_CLUES = 2;
+    private static final int MAX_CLUES = 5;
     private final Random _random = new Random();
 
     private Arena _arena;

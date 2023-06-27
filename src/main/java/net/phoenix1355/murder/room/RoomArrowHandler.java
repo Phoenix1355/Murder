@@ -1,6 +1,7 @@
 package net.phoenix1355.murder.room;
 
 import net.phoenix1355.murder.Murder;
+import net.phoenix1355.murder.config.MainConfigHandler;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.Log;
 import org.bukkit.Sound;
@@ -74,7 +75,7 @@ public class RoomArrowHandler {
     }
 
     private static class DetectiveHolder {
-        private static final int MAX = 10;
+        private static final int MAX = MainConfigHandler.getInstance().getDetectiveRechargeTime();
         private final User _user;
 
         // Has arrow by default, so value is max

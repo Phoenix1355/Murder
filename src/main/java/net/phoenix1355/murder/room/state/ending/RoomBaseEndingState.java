@@ -1,12 +1,13 @@
-package net.phoenix1355.murder.room.state;
+package net.phoenix1355.murder.room.state.ending;
 
 
 import net.phoenix1355.murder.room.RoomStateManager;
+import net.phoenix1355.murder.room.state.BaseRoomState;
 import net.phoenix1355.murder.user.User;
 import net.phoenix1355.murder.utils.ChatFormatter;
 import org.bukkit.Sound;
 
-public class RoomEndingState extends BaseRoomState {
+public abstract class RoomBaseEndingState extends BaseRoomState {
     @Override
     public void onStart() {
         // TODO: Fireworks
